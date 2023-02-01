@@ -41,7 +41,7 @@ const kakaoLogin = asyncErrorHandler(async (req, res) => {
 // 4. 사용자 정보 리턴 BE => FE
 const getUserInfo = asyncErrorHandler(async (req, res) => {
   const userId = req.userId;
-  if (!userId) throwCustomError("GETTING USERS ERROR", 400);
+  if (!userId) return throwCustomError("GETTING USERS ERROR", 400);
   const results = await userService.getUserInfo(userId);
   return res.status(200).json({ data: results });
 });

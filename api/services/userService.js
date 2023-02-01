@@ -136,7 +136,7 @@ const kakaoLogin = async (kakaoCode) => {
 // 4. 사용자 정보 리턴
 const getUserInfo = async (userId) => {
   const result = await userDao.getUserInfo(userId);
-  if (!result.length) throwCustomError("There are no informations", 400);
+  if (!result.length) return throwCustomError("There are no informations", 400);
   return result;
 };
 

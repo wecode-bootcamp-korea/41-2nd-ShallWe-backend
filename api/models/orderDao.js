@@ -9,6 +9,8 @@ const getOrders = async (userId) => {
           uo.counts,
           uo.price,
           pt.name as payment_type,
+          uo.billing_id,
+          uo.created_at,
           JSON_OBJECT(
               "movie_id",m.id,
               "movie_title",m.title,
@@ -58,6 +60,34 @@ const getOrders = async (userId) => {
   }
 };
 
+const completeOrders = async (userId, tid, paymentTypeId, pickId) => {
+  const queryRunner = await myDataSource.createQueryRunner();
+  await queryRunner.connect();
+  await queryRunner.startTransaction();
+  try {
+    await queryRunner.query(
+      `INSERT INTO 
+        user_orders
+        (user_id,meeting_id,counts,price,payment_type_id,payment_method_id,billing_id,activation)
+       SELECT ?,meeting_id,counts,price,?,2,?,TRUE FROM carts WHERE id IN (?);
+      `,
+      [userId, paymentTypeId, tid, pickId]
+    );
+
+    await queryRunner.query(`DELETE FROM carts WHERE id IN (?);`, [pickId]);
+    await queryRunner.commitTransaction();
+    await queryRunner.release();
+    return;
+  } catch (error) {
+    await queryRunner.rollbackTransaction();
+    await queryRunner.release();
+    const err = new Error("GETTING TRANSACTION FAILED ");
+    err.statusCode = 400;
+    throw err;
+  }
+};
+
 module.exports = {
   getOrders,
+  completeOrders,
 };

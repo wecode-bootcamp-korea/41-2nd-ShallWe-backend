@@ -72,6 +72,7 @@ const createReviews = async (userId, movieId, content, imagesUrl) => {
 
     await queryRunner.commitTransaction();
     await queryRunner.release();
+    return;
   } catch (error) {
     await queryRunner.rollbackTransaction();
     await queryRunner.release();
@@ -113,6 +114,7 @@ const updateReviews = async (reviewId, content, imagesUrl) => {
 
     await queryRunner.commitTransaction();
     await queryRunner.release();
+    return;
   } catch (error) {
     await queryRunner.rollbackTransaction();
     await queryRunner.release();
@@ -133,6 +135,7 @@ const deleteReviews = async (userId, reviewId) => {
     ]);
     await queryRunner.commitTransaction();
     await queryRunner.release();
+    return;
   } catch (error) {
     await queryRunner.rollbackTransaction();
     await queryRunner.release();
