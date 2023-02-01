@@ -8,7 +8,8 @@ CREATE TABLE carts (
   created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
   CONSTRAINT user_id_forek FOREIGN KEY (user_id) REFERENCES users (id),
-  CONSTRAINT meeting_id_fk FOREIGN KEY (meeting_id) REFERENCES meetings (id)
+  CONSTRAINT meeting_id_fk FOREIGN KEY (meeting_id) REFERENCES meetings (id),
+  CONSTRAINT user_meeting_unique UNIQUE (user_id,meeting_id)
 );
 
 
