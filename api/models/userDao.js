@@ -9,7 +9,8 @@ const createUser = async (email, hashedPassword, nickName, profileImage) => {
         nickname,
         profile_image
       ) VALUES (?, ?, ?, ?);
-      `, [ email, hashedPassword, nickName, profileImage]
+      `,
+      [email, hashedPassword, nickName, profileImage]
     );
   } catch (err) {
     const error = new Error("INVALID_DATA_INPUT");
@@ -26,7 +27,8 @@ const getUserData = async (email) => {
         id AS userId
         FROM users"
         WHERE email = ?;
-      `, [email]
+      `,
+      [email]
     );
     return userData;
   } catch (err) {
@@ -44,14 +46,15 @@ const createKakaoUser = async (email, name, profileImage) => {
         nickname,
         profile_image
         ) VALUES (?, ?, ?)
-        `, [name, email, profileImage]
-        );
-        return result;
-      } catch (err) {
-        const error = new Error("INVALID");
-         error.statusCode = 400;
-         throw error;
-      }
+        `,
+      [name, email, profileImage]
+    );
+    return result;
+  } catch (err) {
+    const error = new Error("INVALID");
+    error.statusCode = 400;
+    throw error;
+  }
 };
 
 const getKakaoUserData = async (email) => {
@@ -62,7 +65,8 @@ const getKakaoUserData = async (email) => {
         id AS kakaoUserId
         FROM users
         WHERE email = ?;
-      `, [ email ]
+      `,
+      [email]
     );
     return kakaoUserData;
   } catch (err) {
@@ -74,20 +78,32 @@ const getKakaoUserData = async (email) => {
 
 const getUserInfo = async (userId) => {
   try {
-    return await myDataSource.query(
-      `SELECT
-        email,
-        password,
-        nickname,
-        profile_image
-        FROM users
-        WHERE id = ?;
-      `, [userId]
+    const result = myDataSource.query(
+      `
+    SELECT
+     u.id,
+     u.nickname,
+     u.password,
+     u.email,
+     u.profile_image,
+     JSON_ARRAYAGG(
+        JSON_OBJECT(
+            "address",ua.address,
+            "zip_code",ua.zip_code
+            )
+            ) AS address
+    FROM users                  AS u
+    LEFT JOIN user_addresses    AS ua ON ua.user_id =u.id
+    WHERE u.id=?
+    GROUP BY u.nickname,u.email,u.profile_image;
+    `,
+      [userId]
     );
-  } catch (err) {
-    const error = new Error("GET_USER_INFO_FAILED");
-    error.statusCode = 400;
-    throw error;
+    return result;
+  } catch (error) {
+    const err = new Error("get userinfo fail");
+    err.statusCode = 400;
+    throw err;
   }
 };
 

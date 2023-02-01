@@ -4,7 +4,7 @@ CREATE TABLE review_images (
   review_id int NOT NULL,
   image_url varchar(1000) NOT NULL,
   PRIMARY KEY (id),
-  CONSTRAINT review_id_fk FOREIGN KEY (review_id) REFERENCES reviews (id)
+  CONSTRAINT review_id_fk FOREIGN KEY (review_id) REFERENCES reviews (id) ON DELETE CASCADE
 );
 
 
