@@ -1,9 +1,8 @@
 const express = require("express");
+const validateToken = require("../middlewares/auth");
 const userController = require("../controllers/userController");
 
 const router = express.Router();
-
-const { validateToken } = require("../middlewares/auth.js")
 
 // 1. 회원가입
 router.post("/signup", userController.signUp);
@@ -15,8 +14,6 @@ router.post("/login", userController.login);
 router.post("/kakaoLogin", userController.kakaoLogin);
 
 // 4. DB => FE 회원정보 제공
-router.get("/userinfo", validateToken, userController.getUserInfo);
+router.get("", validateToken, userController.getUserInfo);
 
-module.exports = {
-  router,
-};
+module.exports = { router };
