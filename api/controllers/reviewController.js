@@ -11,31 +11,47 @@ const getReviews = asyncErrorHandler(async (request, response) => {
 
 const createReviews = asyncErrorHandler(async (request, response) => {
   const userId = request.userId;
-  const { movieId, content, imagesUrl } = request.body;
+  const { movieId, content, imagesUrl, reviewKey } = request.body;
 
-  if (!userId || !movieId || !content || !Array.isArray(imagesUrl))
+  if (
+    !userId ||
+    !movieId ||
+    !content ||
+    !Array.isArray(imagesUrl) ||
+    !reviewKey
+  )
     throw customError("CREATING REVIEWS ERROR", 400);
-  await reviewService.createReviews(userId, movieId, content, imagesUrl);
+
+  await reviewService.createReviews(
+    userId,
+    movieId,
+    content,
+    imagesUrl,
+    reviewKey
+  );
 
   return response.status(201).json({ message: "Review Created!" });
 });
 
 const updateReviews = asyncErrorHandler(async (request, response) => {
   const userId = request.userId;
-  const { reviewId, content, imagesUrl } = request.body;
+  const { content, imagesUrl, reviewKey } = request.body;
 
-  if (!userId || !reviewId || !content || !Array.isArray(imagesUrl))
+  if (!userId || !reviewKey || !content || !Array.isArray(imagesUrl))
     throw customError("UPDATE REVIEWS ERROR", 400);
-  await reviewService.updateReviews(userId, reviewId, content, imagesUrl);
+
+  await reviewService.updateReviews(userId, reviewKey, content, imagesUrl);
 
   return response.status(200).json({ message: "Updated review" });
 });
 
 const deleteReviews = asyncErrorHandler(async (request, response) => {
   const userId = request.userId;
-  const { reviewId } = request.body;
-  if (!userId || !reviewId) throw customError("DELETE REVIEWS ERROR", 400);
-  await reviewService.deleteReviews(userId, reviewId);
+  const { reviewKey } = request.body;
+
+  if (!userId || !reviewKey) throw customError("DELETE REVIEWS ERROR", 400);
+
+  await reviewService.deleteReviews(userId, reviewKey);
 
   return response.status(200).json({ message: "Delete review" });
 });
