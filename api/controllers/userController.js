@@ -36,6 +36,7 @@ const getUserInfo = asyncErrorHandler(async (req, res) => {
   const userId = req.userId;
   if (!userId) throw customError("GETTING USERS ERROR", 400);
   const results = await userService.getUserInfo(userId);
+
   return res.status(200).json({ data: results });
 });
 

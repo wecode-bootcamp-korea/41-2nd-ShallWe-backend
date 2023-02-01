@@ -28,6 +28,43 @@ const getPick = async (userId) => {
     throw err;
   }
 };
+
+const postPick = async (userId, id, counts, price) => {
+  return await myDataSource.query(
+    `
+  INSERT INTO carts
+  (user_id,meeting_id,counts,price)
+  VALUES (?,?,?,?)
+  ON DUPLICATE KEY UPDATE
+  counts=?,price=?;`,
+    [userId, id, counts, price, counts, price]
+  );
+};
+
+const updatePick = async (userId, id, counts, price) => {
+  return await myDataSource.query(
+    `
+    UPDATE
+      carts
+    SET
+    counts=?, price=? 
+    WHERE user_id=? AND id=?;`,
+    [counts, price, userId, id]
+  );
+};
+
+const deletePick = async (userId, id) => {
+  return await myDataSource.query(
+    `
+    DELETE FROM carts
+    WHERE user_id=? AND id=?;`,
+    [userId, id]
+  );
+};
+
 module.exports = {
   getPick,
+  postPick,
+  updatePick,
+  deletePick,
 };
