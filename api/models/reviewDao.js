@@ -1,11 +1,12 @@
 const { myDataSource } = require("./myDataSource");
-const check = async (userId, reviewId) => {
+const check = async (userId, reviewKey) => {
   try {
     const [result] = await myDataSource.query(
       `
-      SELECT * FROM reviews WHERE id=? AND user_id=?;`,
-      [reviewId, userId]
+      SELECT * FROM reviews WHERE review_key=? AND user_id=?;`,
+      [reviewKey, userId]
     );
+
     return result;
   } catch (error) {
     const err = new Error("check fail");
@@ -24,6 +25,7 @@ const getReviews = async (userId) => {
           m.thumbnail_url,
           r.content,
           r.created_at,
+          r.review_key,
           JSON_ARRAYAGG(
               JSON_OBJECT(
                   "id",ri.image_url
@@ -44,18 +46,25 @@ const getReviews = async (userId) => {
   }
 };
 
-const createReviews = async (userId, movieId, content, imagesUrl) => {
+const createReviews = async (
+  userId,
+  movieId,
+  content,
+  imagesUrl,
+  reviewKey
+) => {
   const queryRunner = await myDataSource.createQueryRunner();
   await queryRunner.connect();
   await queryRunner.startTransaction();
+
   try {
     const review = await queryRunner.query(
       `
        INSERT INTO
-       reviews(user_id,movie_id,content)
-       VALUES (?,?,?);
+       reviews(user_id,movie_id,content,review_key)
+       VALUES (?,?,?,?);
        `,
-      [userId, movieId, content]
+      [userId, movieId, content, reviewKey]
     );
 
     if (imagesUrl.length) {
@@ -72,6 +81,7 @@ const createReviews = async (userId, movieId, content, imagesUrl) => {
 
     await queryRunner.commitTransaction();
     await queryRunner.release();
+    return;
   } catch (error) {
     await queryRunner.rollbackTransaction();
     await queryRunner.release();
@@ -81,27 +91,34 @@ const createReviews = async (userId, movieId, content, imagesUrl) => {
   }
 };
 
-const updateReviews = async (reviewId, content, imagesUrl) => {
+const updateReviews = async (reviewKey, content, imagesUrl) => {
   const queryRunner = await myDataSource.createQueryRunner();
   await queryRunner.connect();
   await queryRunner.startTransaction();
+
   try {
+    const [reviewId] = await queryRunner.query(
+      `SELECT id FROM reviews WHERE review_key=?;`,
+      [reviewKey]
+    );
+
     await queryRunner.query(
       `
         UPDATE reviews SET content=? WHERE id=?;
        `,
-      [content, reviewId]
+      [content, reviewId.id]
     );
 
     await queryRunner.query(
       `
         DELETE FROM review_images WHERE review_id=?;
         `,
-      [reviewId]
+      [reviewId.id]
     );
 
     if (imagesUrl.length) {
-      let params = imagesUrl.map((x) => `(${reviewId},"${x}")`).join(",");
+      let params = imagesUrl.map((x) => `(${reviewId.id},"${x}")`).join(",");
+
       await queryRunner.query(
         `
                 INSERT INTO
@@ -113,6 +130,7 @@ const updateReviews = async (reviewId, content, imagesUrl) => {
 
     await queryRunner.commitTransaction();
     await queryRunner.release();
+    return;
   } catch (error) {
     await queryRunner.rollbackTransaction();
     await queryRunner.release();
@@ -122,17 +140,20 @@ const updateReviews = async (reviewId, content, imagesUrl) => {
   }
 };
 
-const deleteReviews = async (userId, reviewId) => {
+const deleteReviews = async (userId, reviewKey) => {
   const queryRunner = await myDataSource.createQueryRunner();
   await queryRunner.connect();
   await queryRunner.startTransaction();
+
   try {
-    await queryRunner.query(`DELETE FROM reviews WHERE id=? AND user_id=?`, [
-      reviewId,
-      userId,
-    ]);
+    await queryRunner.query(
+      `DELETE FROM reviews WHERE review_key=? AND user_id=?`,
+      [reviewKey, userId]
+    );
+
     await queryRunner.commitTransaction();
     await queryRunner.release();
+    return;
   } catch (error) {
     await queryRunner.rollbackTransaction();
     await queryRunner.release();
