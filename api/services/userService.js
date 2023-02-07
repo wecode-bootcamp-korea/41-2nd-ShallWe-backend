@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 const userDao = require("../models/userDao");
 const axios = require("axios");
 
-const { throwCustomError } = require("../middlewares/error");
+const { customError } = require("../middlewares/error");
 
 const saltRounds = 12;
 const secretKey = process.env.SECRET_KEY;
@@ -14,22 +14,14 @@ const signUp = async (email, password, nickName, profileImage) => {
   // 이미 가입된 사용자인지 확인 (메일주소가 DB에 이미 존재하는지 확인)
   const userData = await userDao.getUserData(email);
 
-  if (userData.length) {
-    const err = new Error("ALREADY_SIGNED_UP");
-    err.statusCode = 409;
-    throw err;
-  }
-
+  if (userData.length) throw customError("ALREADY_SIGNED_UP", 400);
   // 비밀번호 검증
   const pwValidation = new RegExp(
     "^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,20})"
   );
 
-  if (!pwValidation.test(password)) {
-    const err = new Error("PASSWORD_IS_NOT_VALID");
-    err.statusCode = 409;
-    throw err;
-  }
+  if (!pwValidation.test(password))
+    throw customError("PASSWORD_IS_NOT_VALID", 400);
 
   const hashedPassword = await bcrypt.hash(password, saltRounds);
 
@@ -48,28 +40,18 @@ const login = async (email, password) => {
   // 가입된 사용자인지 확인
   const userData = await userDao.getUserData(email);
 
-  if (!userData.length) {
-    const err = new Error("INVALID_USER");
-    err.statusCode = 409;
-    throw err;
-  }
+  if (!userData.length) throw customError("INVALID_USER", 409);
 
   const { hashedPassword, userId } = userData[0];
 
   const pwValidation = new RegExp(
     "^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,20})"
   );
-  if (!pwValidation.test(password)) {
-    const err = new Error("PASSWORD_IS_NOT_VALID");
-    err.statusCode = 409;
-    throw err;
-  }
+  if (!pwValidation.test(password))
+    throw customError("PASSWORD_IS_NOT_VALID", 409);
 
-  if (!(await bcrypt.compare(password, hashedPassword))) {
-    const err = new Error("PASSWORD_IS_NOT_VALID");
-    err.statusCode = 409;
-    throw err;
-  }
+  if (!(await bcrypt.compare(password, hashedPassword)))
+    throw customError("PASSWORD_IS_NOT_VALID", 409);
 
   // JWT 토큰 생성 & 토큰 리턴, 페이로드 값 설정
   const payLoad = { userId: userId };
@@ -136,7 +118,7 @@ const kakaoLogin = async (kakaoCode) => {
 // 4. 사용자 정보 리턴
 const getUserInfo = async (userId) => {
   const result = await userDao.getUserInfo(userId);
-  if (!result.length) throwCustomError("There are no informations", 400);
+  if (!result.length) throw customError("There are no informations", 400);
   return result;
 };
 
