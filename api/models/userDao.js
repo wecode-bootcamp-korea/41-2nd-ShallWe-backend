@@ -44,10 +44,11 @@ const createKakaoUser = async (email, name, profileImage) => {
       `INSERT INTO users(
         email,
         nickname,
-        profile_image
-        ) VALUES (?, ?, ?)
+        profile_image,
+        social_type_id
+        ) VALUES (?, ?, ?,1)
         `,
-      [name, email, profileImage]
+      [email, name, profileImage]
     );
     return result;
   } catch (err) {
@@ -61,8 +62,8 @@ const getKakaoUserData = async (email) => {
   try {
     const kakaoUserData = await myDataSource.query(
       `SELECT
-        name AS kakaoName,
-        id AS kakaoUserId
+        nickname AS kakaoName,
+        id
         FROM users
         WHERE email = ?;
       `,

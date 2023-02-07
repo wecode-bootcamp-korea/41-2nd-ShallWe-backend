@@ -92,25 +92,29 @@ const kakaoLogin = async (kakaoCode) => {
   );
 
   // 회원가입 & 로그인 절차 진행 및 사용자 정보 추출
-  const name = result.data.kakao_account.name;
+  const name = result.data.kakao_account.profile.nickname;
   const email = result.data.kakao_account.email;
-  const profileImage = result.data.kakao_account.profile;
+  const profileImage = result.data.kakao_account.profile.profile_image_url;
 
   // 카카오 회원가입 확인
   const kakaoUser = async (email) => {
     const [kakaoUserData] = await userDao.getKakaoUserData(email);
 
     if (!kakaoUserData) {
-      const createKakaoUser = await userDao.createKakaoUser(email);
-      return { data: createKakaoUser.insertId };
+      const createKakaoUser = await userDao.createKakaoUser(
+        email,
+        name,
+        profileImage
+      );
+      return { userId: createKakaoUser.insertId };
     }
 
-    return { data: kakaoUserData.id };
+    return { userId: kakaoUserData.id };
   };
 
   // 카카오 유저 JWT 토큰 리턴
-  const payLoad = kakaoUser;
-  const jwtToken = jwt.sign(payLoad, secretKey);
+  const payLoad = await kakaoUser(email);
+  const jwtToken = await jwt.sign(payLoad, secretKey);
 
   return { jwtToken, name, email };
 };
