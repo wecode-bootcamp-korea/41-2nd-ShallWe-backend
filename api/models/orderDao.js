@@ -21,7 +21,7 @@ const getOrders = async (userId) => {
               ) AS movies,
 		      JSON_ARRAYAGG(
               JSON_OBJECT(
-              "review_id",r.id,
+              "review_id",r.review_key,
               "review",r.content,
               "created_at",r.created_at,
               "images",sr.images
