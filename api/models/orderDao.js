@@ -105,7 +105,51 @@ const completeOrders = async (tid, paymentTypeId, pickId) => {
   }
 };
 
+const completeSubscription = async (
+  userId,
+  tid,
+  sid,
+  paymentTypeId,
+  subscriptionTypeId
+) => {
+  try {
+    await myDataSource.query(
+      `
+      INSERT INTO
+        subscriptions
+          (user_id,
+           subscription_type_id,
+           activation,
+           payment_type_id,
+           payment_method_id,
+           expiration_at,
+           next_pay_at,
+           billing_key,
+           billing_id)
+      SELECT
+            ?,
+            ?,
+            TRUE,
+            ?,
+            2,
+            DATE_ADD(CURDATE()+INTERVAL 1 MONTH,INTERVAL "1:0" DAY_HOUR),
+            CURDATE()+INTERVAL 1 MONTH,
+            ?,
+            ?;
+
+      `,
+      [userId, subscriptionTypeId, paymentTypeId, sid, tid]
+    );
+    return;
+  } catch (err) {
+    const error = new Error("subscription fail");
+    error.statusCode = 400;
+    throw error;
+  }
+};
+
 module.exports = {
   getOrders,
   completeOrders,
+  completeSubscription,
 };
