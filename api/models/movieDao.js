@@ -127,11 +127,86 @@ const movieDetails = async (movieId) => {
     return result;
   } catch (err) {
     const error = new Error("Getting details error");
-    error.statusCode = 400;
+		error.statusCode = 400;
+    throw error;
+	}
+};
+
+const movieCategory = async ( category, page ) => {
+  try {
+    page = page?page:1;
+    const movieCategory = await myDataSource.query(
+      `SELECT
+        m.id,
+        m.title,
+        m.thumbnail_url,
+        m.movie_genre_id AS genreId,
+        m.price,
+        JSON_ARRAYAGG(
+          JSON_OBJECT(
+            "movieGenreId", mg.id,
+            "movieGenreName", mg.name
+          )
+        ) AS movieGenre,
+        md.id,
+        md.movie_id,
+        md.director_id,
+        JSON_ARRAYAGG(
+          JSON_OBJECT(
+            "movieDirectorId", d.id,
+            "movieDirectorName", d.name
+          )
+        ) AS movieDirector,
+        ma.id,
+        ma.movie_id,
+        ma.actor_id,
+        JSON_ARRAYAGG(
+          JSON_OBJECT(
+            "movieActorId", a.id,
+            "movieActorName", a.name
+          )
+        ) AS movieActor,
+        mt.id,
+        mt.movie_id,
+				mt.capacity,
+				mt.counts,
+        mt.meeting_date,
+        mt.meeting_place_id,
+        mt.meeting_time_id,
+        JSON_ARRAYAGG(
+          JSON_OBJECT(
+            "meetingPlaceId", mp.id,
+            "meetingPlaceMovieId", mp.movie_id,
+            "meetingPlaceAddress", mp.address,
+            "meetingTimeId", mts.id,
+            "meetingTime", mts.time
+          )
+        ) AS meetingData,
+        (SELECT COUNT(*) FROM movies) AS count
+        FROM movies m
+        JOIN movie_genres mg ON m.movie_genre_id = mg.id
+        LEFT JOIN movie_directors md ON md.movie_id = m.id
+        LEFT JOIN directors d ON d.id = m.id
+        LEFT JOIN movie_actors ma ON ma.movie_id = m.id
+        LEFT JOIN actors a ON a.id = m.id
+        LEFT JOIN meetings mt ON mt.movie_id = m.id
+        LEFT JOIN meeting_places mp ON mt.meeting_place_id = mp.id
+        LEFT JOIN meeting_times mts ON mt.meeting_time_id = mts.id
+        GROUP BY m.id, md.id, ma.id, mt.id
+        LIMIT ${(page - 1) * 8}, 8;
+      `, [category]
+    );
+
+    return movieCategory;
+  } catch (err) {
+    const error = new Error("INVALID_DATA_movieCategory");
+    console.log(err);
     throw error;
   }
 };
 
 module.exports = {
-  movieDetails,
+	movieDetails,
+  movieCategory,
 };
+

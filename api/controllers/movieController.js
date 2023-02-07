@@ -8,4 +8,23 @@ const movieDetails = asyncErrorHandler(async (request, response) => {
   return response.status(200).json({ data: movie });
 });
 
-module.exports = { movieDetails };
+const getMovieCategory = asyncErrorHandler (async (req, res) => {
+  const { category, page } = req.query;
+  try {
+    const movieCategory = await movieService.getMovieCategory(
+      category,
+      page,
+      )
+
+    return res.status(200).json(movieCategory);
+  } catch (error) {
+    console.log(error);
+    error.statusCode = 500;
+    throw error;
+  }
+});
+
+ module.exports = {
+  movieDetails,
+  getMovieCategory,
+};
