@@ -6,6 +6,7 @@ const morgan = require("morgan");
 const routes = require("./api/routes");
 
 const { errorHandler } = require("./api/middlewares/error");
+const subscription = require("./api/utils/subscription");
 
 const createApp = () => {
   const app = express();
@@ -20,6 +21,8 @@ const createApp = () => {
   app.get("/ping", (request, response) => {
     response.status(200).send("pong");
   });
+
+  subscription();
 
   return app;
 };

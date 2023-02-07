@@ -25,6 +25,7 @@
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.0",
     "mysql2": "^2.3.3",
+    "node-cron": "^3.0.2",
     "node-fecth": "^0.0.1-security",
     "typeorm": "^0.3.11"
   }
