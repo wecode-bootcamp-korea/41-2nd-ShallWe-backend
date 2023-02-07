@@ -8,8 +8,9 @@ const validateToken = async (req, res, next) => {
     req.userId = decode.userId;
     next();
   } catch (err) {
-    await res.status(401).json({ message: "Invalid Access Token" });
-    next(err);
+    const error = new Error("Invalid Access Token");
+    error.statusCode = 401;
+    next(error);
   }
 };
 
