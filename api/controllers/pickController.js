@@ -35,7 +35,7 @@ const updatePick = asyncErrorHandler(async (request, response) => {
 
 const deletePick = asyncErrorHandler(async (request, response) => {
   const userId = request.userId;
-  const id = request.body.id;
+  const id = request.params.id;
 
   if (!userId || !id) throwCustomError("DELETE PICK ERROR", 400);
 
