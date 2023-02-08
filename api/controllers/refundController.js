@@ -9,6 +9,17 @@ const getRefunds = asyncErrorHandler(async (request, response) => {
   return response.status(200).json({ data: results });
 });
 
+const cancelSubscription = asyncErrorHandler(async (request, response) => {
+  const userId = request.userId;
+  const subscriptionId = request.body.subscriptionId;
+
+  if (!userId || !subscriptionId)
+    throw customError("cancel subscription fail", 400);
+  const result = await refundService.cancelSubscription(userId, subscriptionId);
+  return response.status(200).json({ message: "subscription cancelled" });
+});
+
 module.exports = {
   getRefunds,
+  cancelSubscription,
 };
