@@ -40,4 +40,55 @@ const getRefunds = async (userId) => {
   }
 };
 
-module.exports = { getRefunds };
+const check = async (subscriptionId) => {
+  try {
+    const result = await myDataSource.query(
+      `SELECT * FROM subscriptions WHERE id=?;`,
+      [subscriptionId]
+    );
+    return result;
+  } catch (error) {
+    const err = new Error("check subscription fail");
+    err.statusCode = 400;
+    throw err;
+  }
+};
+
+const cancelSubscription = async (userId, subscriptionId, expiration_at) => {
+  try {
+    await myDataSource.query(
+      `
+      INSERT INTO subscription_refund
+       (user_id,subscription_id,price,refund_status_id)
+      VALUES
+      (?,?,0,2)
+       `,
+      [userId, subscriptionId]
+    );
+    await myDataSource.query(
+      `
+      UPDATE subscriptions
+      SET next_pay_at=?
+      WHERE id=?
+      `,
+      [expiration_at, subscriptionId]
+    );
+    await myDataSource.query(
+      `
+      CREATE EVENT IF NOT EXISTS subscription_activation
+      ON SCHEDULE AT ?
+      DO
+        UPDATE subscriptions 
+        SET activation=FALSE
+        WHERE id=?;`,
+      [expiration_at, subscriptionId]
+    );
+    return;
+  } catch (error) {
+    const err = new Error("cancel subscription fail");
+    err.statusCode = 400;
+    throw err;
+  }
+};
+
+module.exports = { getRefunds, check, cancelSubscription };
