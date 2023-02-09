@@ -5,6 +5,7 @@ const getSubscriptions = async (userId) => {
       `
       SELECT 
           s.id,
+          s.subscription_type_id,
           st.name     AS subscription_name,
           st.price    AS subscription_price,
           st.detail   AS subscription_detail,
