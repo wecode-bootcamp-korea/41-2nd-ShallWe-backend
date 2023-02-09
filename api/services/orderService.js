@@ -1,41 +1,42 @@
 const orderDao = require("../models/orderDao");
 
-const getOrders = async (userId) => {
-  return await orderDao.getOrders(userId);
-};
-
-const completeOrders = async (tid, paymentType, pickId) => {
-  const type = Object.freeze({
+class orderService {
+  type = Object.freeze({
     MONEY: 2,
     CARD: 3,
   });
 
-  return await orderDao.completeOrders(tid, type[paymentType], pickId);
-};
+  constructor() {
+    this.orderDao = new orderDao();
+  }
 
-const completeSubscription = async (
-  userId,
-  tid,
-  sid,
-  paymentType,
-  subscriptionTypeId
-) => {
-  const type = Object.freeze({
-    MONEY: 2,
-    CARD: 3,
-  });
+  async getOrders(userId) {
+    return await this.orderDao.getOrders(userId);
+  }
 
-  return await orderDao.completeSubscription(
+  async completeOrders(tid, paymentType, pickId) {
+    return await this.orderDao.completeOrders(
+      tid,
+      this.type[paymentType],
+      pickId
+    );
+  }
+
+  async completeSubscription(
     userId,
     tid,
     sid,
-    type[paymentType],
+    paymentType,
     subscriptionTypeId
-  );
-};
+  ) {
+    return await this.orderDao.completeSubscription(
+      userId,
+      tid,
+      sid,
+      this.type[paymentType],
+      subscriptionTypeId
+    );
+  }
+}
 
-module.exports = {
-  getOrders,
-  completeOrders,
-  completeSubscription,
-};
+module.exports = orderService;
