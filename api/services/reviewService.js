@@ -3,7 +3,7 @@ const orderDao = require("../models/orderDao");
 const { customError } = require("../middlewares/error");
 
 const getReviews = async (userId) => {
-  const reviews = await orderDao.getOrders(userId);
+  const reviews = await new orderDao().getOrders(userId);
 
   return reviews;
 };

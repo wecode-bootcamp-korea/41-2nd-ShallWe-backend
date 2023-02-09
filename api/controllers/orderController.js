@@ -1,6 +1,8 @@
-const orderService = require("../services/orderService");
+const service = require("../services/orderService");
 const { asyncErrorHandler, customError } = require("../middlewares/error");
 const axios = require("axios");
+
+const orderService = new service();
 
 let tid;
 let userId;
