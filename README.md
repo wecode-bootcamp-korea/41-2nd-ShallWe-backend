@@ -53,16 +53,16 @@
 
 | 사이트                 | 구현 모습                                                                                                                           | 담당 개발자                           |
 | ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------- |
-| 인트로 페이지              | <img src = "https://user-images.githubusercontent.com/117936577/218308539-5fefe6a0-eeaf-4cbe-a3d4-6253edc141dd.gif" width = "400px"> | -프론트엔드: 박채연 <br> -백엔드:        |
-| 메인 페이지                 | <img src ="https://user-images.githubusercontent.com/117936577/218308786-3a9da0cb-b272-4330-b509-66aafd45079b.gif" width = "400px"> | -프론트엔드: 박채연, 장찬영 <br> -백엔드:        |
-| 로그인 페이지                 | <img src ="https://user-images.githubusercontent.com/117936577/218308956-8985f045-cdb6-4b9d-95ce-feed8bcc31ae.gif" width = "400px"> | -프론트엔드: 김성재 <br> -백엔드:        |
-| 카테고리 페이지                   | <img src = "https://user-images.githubusercontent.com/117936577/218308843-12a14dee-77f1-4e27-9e97-f14852dc990e.gif" width = "400px"> | -프론트엔드: 장찬영 <br> -백엔드:        |
-| 마이 페이지                     | <img src = "https://user-images.githubusercontent.com/117936577/218312377-5e43ca3b-b44c-4372-9915-3813e58c8211.gif" width = "400px"> | -프론트엔드: 김성재 <br> -백엔드:        |
+| 인트로 페이지              | <img src = "https://user-images.githubusercontent.com/117936577/218308539-5fefe6a0-eeaf-4cbe-a3d4-6253edc141dd.gif" width = "400px"> | -프론트엔드: 박채연 <br>        |
+| 메인 페이지                 | <img src ="https://user-images.githubusercontent.com/117936577/218308786-3a9da0cb-b272-4330-b509-66aafd45079b.gif" width = "400px"> | -프론트엔드: 박채연, 장찬영 <br> -백엔드: 박상우        |
+| 로그인 페이지                 | <img src ="https://user-images.githubusercontent.com/117936577/218308956-8985f045-cdb6-4b9d-95ce-feed8bcc31ae.gif" width = "400px"> | -프론트엔드: 김성재 <br> -백엔드:박상우        |
+| 카테고리 페이지                   | <img src = "https://user-images.githubusercontent.com/117936577/218308843-12a14dee-77f1-4e27-9e97-f14852dc990e.gif" width = "400px"> | -프론트엔드: 장찬영 <br> -백엔드:  박상우       |
+| 마이 페이지                     | <img src = "https://user-images.githubusercontent.com/117936577/218312377-5e43ca3b-b44c-4372-9915-3813e58c8211.gif" width = "400px"> | -프론트엔드: 김성재 <br> -백엔드:백종호        |
 | 상세 페이지          | <img src = "https://user-images.githubusercontent.com/117936577/218311556-b76b83e5-f6f2-4a87-90d0-92664fb23dc9.gif" width = "400px"> | -프론트엔드: 박채연 <br> -백엔드:         |
-| 구독 페이지         | <img src = "https://user-images.githubusercontent.com/117936577/218308900-69a498fd-8525-4bea-ae95-3c758b442c09.gif" width = "400px"> | -프론트엔드: 김성재 <br> -백엔드:         |
-| 장바구니, 결제 페이지             | <img src = "https://user-images.githubusercontent.com/117936577/218310593-0dc8a69b-a664-4487-8544-e3f41ddf5b2b.gif" width = "400px"> | -프론트엔드: 박예솔 <br> -백엔드:         |
-| 네비게이션 바              | <img src = "https://user-images.githubusercontent.com/117936577/218312109-8274c1ae-f77e-4f08-92fe-00f265aa2a8b.gif" width = "400px"> | -프론트엔드: 박예솔 <br> -백엔드:            |
-| Footer            | <img src = "https://user-images.githubusercontent.com/117936577/218311970-3ef7b559-f892-475c-afcb-ec0301628783.gif" width = "400px"> | -프론트엔드: 김성재 <br> -백엔드:                      |
+| 구독 페이지         | <img src = "https://user-images.githubusercontent.com/117936577/218308900-69a498fd-8525-4bea-ae95-3c758b442c09.gif" width = "400px"> | -프론트엔드: 김성재 <br> -백엔드: 백종호         |
+| 장바구니, 결제 페이지             | <img src = "https://user-images.githubusercontent.com/117936577/218310593-0dc8a69b-a664-4487-8544-e3f41ddf5b2b.gif" width = "400px"> | -프론트엔드: 박예솔 <br> -백엔드: 백종호        |
+| 네비게이션 바              | <img src = "https://user-images.githubusercontent.com/117936577/218312109-8274c1ae-f77e-4f08-92fe-00f265aa2a8b.gif" width = "400px"> | -프론트엔드: 박예솔          |
+| Footer            | <img src = "https://user-images.githubusercontent.com/117936577/218311970-3ef7b559-f892-475c-afcb-ec0301628783.gif" width = "400px"> | -프론트엔드: 김성재                     |
 
 
 # 📌 구현 사항 설명
@@ -100,21 +100,31 @@
 ## 7. 마이 페이지
 ### FE
 ### BE
+- 사용자의 영화 모임 결제 정보 확인
+- 사용자의 구독 결제 내역, 취소
+- 사용자의 개인 정보 확인
+- 사용자의 리뷰 작성, 수정, 삭제 기능
 
 ## 8. 상세 페이지
 
 ### FE
 ### BE
+- 영화 모임 상세페이지
+- 모임시간, 장소 옵션 추가
 
 ## 9. 구독 페이지
 
 ### FE
 ### BE
+- Kakao Pay 를 이용한 구독 결제
+- Cron library를 이용한 1개월 주기로 정기 결제 
+- mysql scheduler를 이용해 구독 활성화 취소
 
 ## 10. 장바구니, 결제 페이지
 
 ### FE
 ### BE
+- Kakao Pay를 이용한 결제 기능 
 
 ## 추가 구현 사항
 
